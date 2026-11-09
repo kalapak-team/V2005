@@ -1,91 +1,133 @@
-# V2005 E-Commerce Platform
+<div align="center">
 
-Modern, professional e-commerce monorepo with a customer storefront, admin dashboard, and Laravel REST API.
+# 🛍️ V2005 — E-Commerce Platform
 
-## Architecture
+**A modern, full-stack e-commerce monorepo built with Next.js & Laravel.**  
+Customer storefront · Admin dashboard · REST API backend
 
-```text
-user-frontend (Next.js :3000)
-        │
-        │ REST /api/v1
-        ▼
-     backend (Laravel :8000)
-        │
-        ▼
-   PostgreSQL (v2005_data)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
-admin-frontend (Next.js :3001)
-        │
-        │ REST /api/v1
-        ▼
-     backend (Laravel :8000)
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Tech Stack](#-tech-stack)
+- [Prerequisites](#-prerequisites)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [Deployment](#-deployment)
+- [Design System](#-design-system)
+- [Development Roadmap](#-development-roadmap)
+- [License](#-license)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────┐     ┌──────────────────────────┐
+│   user-frontend          │     │   admin-frontend          │
+│   Next.js  :3000         │     │   Next.js  :3001          │
+└──────────┬──────────────┘     └────────────┬─────────────┘
+           │  REST /api/v1                   │  REST /api/v1
+           └──────────────┬──────────────────┘
+                          ▼
+              ┌───────────────────────┐
+              │  backend (Laravel)    │
+              │  :8000                │
+              └──────────┬────────────┘
+                         ▼
+              ┌───────────────────────┐
+              │  PostgreSQL           │
+              │  v2005_data           │
+              └───────────────────────┘
 ```
 
-## Project Structure
+---
 
-```text
+## 📁 Project Structure
+
+```
 V2005/
-├── user-frontend/   # Public customer storefront
-├── admin-frontend/  # Admin dashboard (separate Next.js app)
-└── backend/         # Laravel API (Dockerfile → Railway + Neon)
-    ├── Dockerfile
-    ├── railway.toml
+├── user-frontend/      # Public customer storefront (Next.js)
+├── admin-frontend/     # Admin dashboard (Next.js)
+└── backend/            # Laravel REST API
+    ├── Dockerfile      # FrankenPHP production image
+    ├── railway.toml    # Railway deployment config
     └── docker/
+        ├── entrypoint.sh   # Migrate + serve on $PORT
+        └── Caddyfile       # Laravel front controller
 ```
 
-## Tech Stack
+---
 
-| App | Stack |
+## 🛠️ Tech Stack
+
+| Layer | Technology |
 |---|---|
-| User Frontend | Next.js, React, TypeScript, Tailwind CSS, Zustand, React Hook Form, Zod, Lucide |
-| Admin Frontend | Next.js, React, TypeScript, Tailwind CSS, Zustand, React Hook Form, Zod, Lucide |
-| Backend | Laravel, Sanctum, PostgreSQL |
-| Media | Cloudinary (product images) |
+| **User Frontend** | Next.js · React · TypeScript · Tailwind CSS · Zustand · React Hook Form · Zod · Lucide |
+| **Admin Frontend** | Next.js · React · TypeScript · Tailwind CSS · Zustand · React Hook Form · Zod · Lucide |
+| **Backend API** | Laravel 13 · Sanctum · PostgreSQL |
+| **Media Storage** | Cloudinary (product images) |
+| **Production DB** | Neon (serverless PostgreSQL) |
+| **Deployment** | Railway (backend) · Vercel (frontends) |
 
-## Prerequisites
+---
 
-- Node.js 20+
-- PHP 8.4+ (required by Laravel 13)
-- Composer 2+
-- PostgreSQL 14+ with database `v2005_data`
-- PHP extensions: `pdo_pgsql`, `pgsql`
+## ✅ Prerequisites
 
-## Phase 1 Status
+Ensure the following are installed before getting started:
 
-Completed:
+| Requirement | Version |
+|---|---|
+| Node.js | 20+ |
+| PHP | 8.4+ |
+| Composer | 2+ |
+| PostgreSQL | 14+ |
 
-- Monorepo scaffold (`user-frontend`, `admin-frontend`, `backend`)
-- Tailwind design tokens (light/dark)
-- Environment variable templates
-- Laravel Sanctum installed
-- Versioned API (`/api/v1/health`)
-- CORS configured for both frontends
-- PostgreSQL connection targeting `v2005_data`
+> **PHP Extensions required:** `pdo_pgsql`, `pgsql`
 
-## Setup
+---
 
-### 1. PostgreSQL
+## 🚀 Getting Started
 
-Create the database in pgAdmin (or psql) if it does not already exist:
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/kalapak-team/V2005.git
+cd v2005
+```
+
+### 2. Create the Database
+
+Open `psql` or pgAdmin and run:
 
 ```sql
 CREATE DATABASE v2005_data;
 ```
 
-### 2. Backend
+### 3. Backend Setup
 
 ```bash
 cd backend
-copy .env.example .env   # Windows
-# Set DB_USERNAME / DB_PASSWORD to match your PostgreSQL credentials
+copy .env.example .env
+# Edit .env — set DB_USERNAME and DB_PASSWORD to match your PostgreSQL credentials
 php artisan key:generate
 php artisan migrate
 php artisan serve
 ```
 
-API health check: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
+✅ API health check: [http://localhost:8000/api/v1/health](http://localhost:8000/api/v1/health)
 
-### 3. User Frontend
+### 4. User Frontend
 
 ```bash
 cd user-frontend
@@ -94,9 +136,9 @@ npm install
 npm run dev
 ```
 
-App: [http://localhost:3000](http://localhost:3000)
+✅ App: [http://localhost:3000](http://localhost:3000)
 
-### 4. Admin Frontend
+### 5. Admin Frontend
 
 ```bash
 cd admin-frontend
@@ -105,87 +147,86 @@ npm install
 npm run dev
 ```
 
-App: [http://localhost:3001](http://localhost:3001)
+✅ App: [http://localhost:3001](http://localhost:3001)
 
-### Root helper scripts
+### 6. Root Helper Scripts
 
-From the repository root:
+Run all services from the repository root:
 
 ```bash
-npm run dev:user
-npm run dev:admin
-npm run dev:api
+npm run dev:user    # Start user storefront
+npm run dev:admin   # Start admin dashboard
+npm run dev:api     # Start Laravel backend
 ```
 
-## Environment Variables
+---
 
-### Local vs production
+## 🔐 Environment Variables
 
-| Concern | Local | Production |
-|---|---|---|
-| Database | PostgreSQL on `127.0.0.1` (`v2005_data`) via `backend/.env` | [Neon](https://neon.tech) via host env / `backend/.env.production` |
-| Images / media | Cloudinary (`v2005`) | Same Cloudinary cloud |
+> ⚠️ **Never commit real secrets to Git.** Use `.env.example` files as templates only.
 
-Keep secrets out of git. Templates: `backend/.env.example` (local) and `backend/.env.production.example` (Neon).
+### Frontend (user-frontend & admin-frontend)
 
-### user-frontend / admin-frontend
-
-```text
+```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
 ```
 
-### backend (local)
+### Backend — Local (`.env`)
 
-```text
+```env
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=v2005_data
 DB_USERNAME=postgres
-DB_PASSWORD=
+DB_PASSWORD=your_password
 DB_SSLMODE=prefer
+
 CLOUDINARY_CLOUD_NAME=v2005
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 CLOUDINARY_FOLDER=v2005/products
 ```
 
-### backend (production / Neon)
+### Backend — Production / Neon (`.env.production`)
 
-Set these on your host (or copy from `.env.production.example`):
-
-```text
+```env
 DB_CONNECTION=pgsql
 DB_URL=postgresql://neondb_owner:PASSWORD@HOST/neondb?sslmode=require
 DB_SSLMODE=require
+
 CLOUDINARY_CLOUD_NAME=v2005
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 CLOUDINARY_FOLDER=v2005/products
 ```
 
-After first deploy: `php artisan migrate --force` against Neon.
+After the first deploy, run: `php artisan migrate --force`
 
-### Deploy backend to Railway (Dockerfile)
+---
 
-Files in `backend/`:
+## ☁️ Deployment
 
-- `Dockerfile` — FrankenPHP (PHP 8.4) concurrent server
-- `railway.toml` — health check `/up`
-- `docker/entrypoint.sh` — migrate + FrankenPHP on `$PORT`
-- `docker/Caddyfile` — public Laravel front controller
+### Backend → Railway (Docker)
 
-**Steps**
+The `backend/` directory is fully configured for Railway deployment via Docker.
 
-1. Push the repo to GitHub (already done).
-2. In [Railway](https://railway.app): **New Project** → **Deploy from GitHub** → select `v2005`.
-3. Service settings:
-   - **Root Directory:** `backend`
-   - Builder uses `Dockerfile` automatically (`railway.toml`).
+| File | Purpose |
+|---|---|
+| `Dockerfile` | FrankenPHP (PHP 8.4) concurrent server image |
+| `railway.toml` | Health check endpoint `/up` |
+| `docker/entrypoint.sh` | Runs `migrate --force` then serves on `$PORT` |
+| `docker/Caddyfile` | Laravel public front controller |
+
+**Step-by-step deployment:**
+
+1. Push this repository to GitHub.
+2. Go to [Railway](https://railway.app) → **New Project** → **Deploy from GitHub** → select `v2005`.
+3. Under Service settings, set **Root Directory** to `backend` (Railway auto-detects the `Dockerfile`).
 4. Add a public domain under **Settings → Networking**.
-5. Set variables (Variables tab) — use Neon + Cloudinary, not local Postgres:
+5. Set the following environment variables in the **Variables** tab:
 
-```text
+```env
 APP_NAME=V2005
 APP_ENV=production
 APP_DEBUG=false
@@ -194,54 +235,48 @@ APP_URL=https://YOUR-SERVICE.up.railway.app
 LOG_CHANNEL=stderr
 
 DB_CONNECTION=pgsql
-DB_URL=postgresql://neondb_owner:PASSWORD@ep-....neon.tech/neondb?sslmode=require
-DB_HOST=ep-divine-hill-b3dw3jxr.c-4.ap-southeast-1.aws.neon.tech
+DB_URL=postgresql://neondb_owner:PASSWORD@ep-...neon.tech/neondb?sslmode=require
+DB_HOST=ep-your-host.ap-southeast-1.aws.neon.tech
 DB_PORT=5432
 DB_DATABASE=neondb
 DB_USERNAME=neondb_owner
 DB_PASSWORD=YOUR_NEON_PASSWORD
 DB_SSLMODE=require
+DB_PERSISTENT=true
+DB_CONNECT_TIMEOUT=10
 
 CLOUDINARY_CLOUD_NAME=v2005
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 CLOUDINARY_FOLDER=v2005/products
 
 FRONTEND_USER_URL=https://your-storefront.vercel.app
 FRONTEND_ADMIN_URL=https://your-admin.vercel.app
 SANCTUM_STATEFUL_DOMAINS=your-storefront.vercel.app,your-admin.vercel.app
+
 SESSION_DRIVER=file
 CACHE_STORE=file
 QUEUE_CONNECTION=sync
-DB_PERSISTENT=true
-DB_CONNECT_TIMEOUT=10
 ```
 
-Pick the Railway region closest to the Neon region (Neon here is `ap-southeast-1`, so use
-Singapore / Southeast Asia). Cross-region deploys pay ~2s per database connect, which dominates
-every uncached API request.
+> **💡 Tip:** Choose the Railway region closest to your Neon region to minimize latency. This project uses `ap-southeast-1` (Singapore). Cross-region connections can add ~2s per database call on cold queries.
 
-6. Redeploy. Entrypoint runs `php artisan migrate --force` then serves the API with FrankenPHP (concurrent — do not use `php artisan serve` in production).
-7. Health: `https://YOUR-SERVICE.up.railway.app/up` and `/api/v1/health`.
+6. **Redeploy.** The entrypoint will run `php artisan migrate --force` automatically, then start FrankenPHP.
+7. Verify health endpoints:
+   - `https://YOUR-SERVICE.up.railway.app/up`
+   - `https://YOUR-SERVICE.up.railway.app/api/v1/health`
 
-Generate `APP_KEY` locally: `cd backend && php artisan key:generate --show`.
+**Generate `APP_KEY` locally:**
 
-Never commit real secrets.
+```bash
+cd backend && php artisan key:generate --show
+```
 
-## Development Phases
+---
 
-1. **Phase 1** — Project initialization *(current)*
-2. Phase 2 — Database & Laravel foundation
-3. Phase 3 — Authentication
-4. Phase 4 — Product system
-5. Phase 5 — User frontend catalog/cart
-6. Phase 6 — Checkout & orders
-7. Phase 7 — Admin frontend
-8. Phase 8 — Advanced features
-9. Phase 9 — Polish
-10. Phase 10 — Testing & deployment
+## 🎨 Design System
 
-## Design System (V2005)
+V2005 uses a consistent design token system with full **light / dark mode** support.
 
 | Token | Light | Dark |
 |---|---|---|
@@ -252,6 +287,35 @@ Never commit real secrets.
 | Accent (sale) | `#F97316` | `#F97316` |
 | Navy | `#0F172A` | — |
 
-## License
+---
 
-Private project — V2005.
+## 🗺️ Development Roadmap
+
+| Phase | Description | Status |
+|---|---|---|
+| **Phase 1** | Project initialization & monorepo scaffold | ✅ Complete |
+| **Phase 2** | Database & Laravel foundation | 🔲 Planned |
+| **Phase 3** | Authentication (Sanctum) | 🔲 Planned |
+| **Phase 4** | Product system | 🔲 Planned |
+| **Phase 5** | User frontend — catalog & cart | 🔲 Planned |
+| **Phase 6** | Checkout & orders | 🔲 Planned |
+| **Phase 7** | Admin frontend | 🔲 Planned |
+| **Phase 8** | Advanced features | 🔲 Planned |
+| **Phase 9** | UI/UX polish | 🔲 Planned |
+| **Phase 10** | Testing & deployment | 🔲 Planned |
+
+**Phase 1 Completed:**
+- ✅ Monorepo scaffold (`user-frontend`, `admin-frontend`, `backend`)
+- ✅ Tailwind design tokens (light/dark)
+- ✅ Environment variable templates
+- ✅ Laravel Sanctum installed
+- ✅ Versioned API (`/api/v1/health`)
+- ✅ CORS configured for both frontends
+- ✅ PostgreSQL connection targeting `v2005_data`
+
+---
+
+## 📄 License
+
+This is a **private project** — all rights reserved.  
+© 2026 V2005. Unauthorized use, reproduction, or distribution is prohibited.
